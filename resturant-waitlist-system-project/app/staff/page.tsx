@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { getStaffFromToken } from "@/lib/auth";
 import { getWaitlistEntries } from "@/lib/waitlist";
 
@@ -19,6 +20,7 @@ export default function StaffPage() {
 }
 
 async function StaffDashboard() {
+  await connection();
   const cookieStore = await cookies();
   const staff = getStaffFromToken(cookieStore.get("staff-session")?.value);
   if (!staff) {
