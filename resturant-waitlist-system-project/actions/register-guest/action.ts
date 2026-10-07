@@ -1,37 +1,35 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+import {
+  registerWaitlistEntry,
+  validateWaitlistInput,
+} from "@/lib/waitlist";
+
 export type RegisterGuestState = {
   message: string;
   success: boolean;
+  ticket?: number;
 };
 
 export async function registerGuest(
   _previousState: RegisterGuestState,
   formData: FormData,
 ): Promise<RegisterGuestState> {
-  const name = String(formData.get("name") ?? "").trim();
-  const partySize = Number(formData.get("partySize"));
-
-  if (!name) {
-    return { message: "Please enter your name.", success: false };
+  const validated = validateWaitlistInput(
+    formData.get("name"),
+    formData.get("partySize"),
+  );
+  if (!validated.success) {
+    return { message: validated.message, success: false };
   }
 
-  if (name.length > 80) {
-    return {
-      message: "Your name must be 80 characters or fewer.",
-      success: false,
-    };
-  }
-
-  if (!Number.isInteger(partySize) || partySize < 1 || partySize > 20) {
-    return {
-      message: "Choose a party size between 1 and 20.",
-      success: false,
-    };
-  }
+  const ticket = registerWaitlistEntry(validated.name, validated.partySize);
+  revalidatePath("/staff");
 
   return {
-    message: `Thanks, ${name}. We’ve received your party details for ${partySize}.`,
+    message: "Your party has been added to the waitlist.",
     success: true,
+    ticket,
   };
 }

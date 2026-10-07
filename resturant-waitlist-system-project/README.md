@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Restaurant Waitlist System
 
-## Getting Started
+A small restaurant waitlist application for guest check-in and staff monitoring.
 
-First, run the development server:
+## Overview
+
+This project lets customers join a restaurant line without needing a host to manually track names. The guest fills in their name and party size, then receives a ticket number and can check how many parties are ahead.
+
+Staff members can log in to a secure dashboard to view the current waiting parties.
+
+## Features
+
+- Guest registration form for the waitlist
+- Ticket number generation for each party
+- Position tracking for guests waiting in line
+- Staff login page with protected dashboard
+- SQLite database storage for waitlist records
+
+## Tech stack
+
+- Next.js
+- React + TypeScript
+- SQLite
+- JWT authentication
+
+## Project structure
+
+- `app/` — pages and API routes
+- `components/` — UI components
+- `lib/` — validation, auth, and waitlist logic
+- `database/` — SQLite connection, models, and migrations
+- `actions/` — server actions
+
+## Setup
+
+Use Node.js 18 or newer.
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copy the values from `.env.example` and update them before running the app.
 
-## Learn More
+- `STAFF_NAME` — display name shown in the staff area
+- `STAFF_USERNAME` — staff login username
+- `STAFF_PASSWORD` — staff login password
+- `JWT_SECRET` — secret key for JWT tokens (minimum 32 characters)
 
-To learn more about Next.js, take a look at the following resources:
+Important: change the default login credentials before using this app in a real environment.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Staff login
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Default staff login is:
 
-## Deploy on Vercel
+- Username: `staff`
+- Password: set in `STAFF_PASSWORD`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The login page is available at `/staff/login`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Database
+
+The app uses SQLite and stores data in `database/data/waitlist.sqlite` by default. Schema setup is handled by the migration files in `database/migrations/sqlite/`.
+
+## Usage
+
+1. Open the home page and go to the waitlist form.
+2. Enter your name and party size.
+3. Submit the form to receive a ticket.
+4. View your waiting position on the results page.
+5. Log in as staff to see all active waiting parties.
+
+## Notes
+
+This is a lightweight MVP intended for local development or demo use. For production, you would typically move to a more robust database and add additional operational safeguards.
